@@ -6,9 +6,11 @@ import type { Db } from '../../db/sqlite';
 import type { CatalogService } from '../../domain/catalog/service';
 import type { BookingsService } from '../../domain/booking/service';
 import type { AvailabilityService } from '../../domain/booking/availability';
+import type { PaymentService } from '../../domain/payment/service';
 import { createAuthRouter } from './auth';
 import { createCatalogRouter } from './catalog';
 import { createBookingsRouter } from './bookings';
+import { createPaymentsRouter } from './payments';
 
 /**
  * API router: every domain module mounts here under `/api/v1`.
@@ -23,6 +25,7 @@ export interface ApiRouterDeps {
   catalog: CatalogService;
   bookings: BookingsService;
   availability: AvailabilityService;
+  payments: PaymentService;
 }
 
 export function createApiRouter(deps: ApiRouterDeps): Router {
@@ -31,6 +34,7 @@ export function createApiRouter(deps: ApiRouterDeps): Router {
   router.use('/auth', createAuthRouter(deps));
   router.use(createCatalogRouter(deps));
   router.use(createBookingsRouter(deps));
+  router.use(createPaymentsRouter(deps));
 
   return router;
 }

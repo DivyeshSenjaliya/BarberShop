@@ -9,6 +9,7 @@ import { AuthService } from '../domain/auth/service';
 import { CatalogService } from '../domain/catalog/service';
 import { BookingsService } from '../domain/booking/service';
 import { AvailabilityService } from '../domain/booking/availability';
+import { PaymentService } from '../domain/payment/service';
 import { asyncHandler } from './asyncHandler';
 import {
   accessLog,
@@ -110,6 +111,7 @@ function registerRoutes(app: Express, deps: AppDeps): void {
   const catalog = new CatalogService({ db, logger });
   const bookings = new BookingsService({ db, logger });
   const availability = new AvailabilityService({ db, logger });
+  const payments = new PaymentService({ db, logger });
 
   app.get(
     '/healthz',
@@ -133,6 +135,6 @@ function registerRoutes(app: Express, deps: AppDeps): void {
 
   app.use(
     '/api/v1',
-    createApiRouter({ db, config, logger, auth, catalog, bookings, availability }),
+    createApiRouter({ db, config, logger, auth, catalog, bookings, availability, payments }),
   );
 }
