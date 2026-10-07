@@ -24,6 +24,7 @@ import { createPaymentsRouter } from './payments';
 import { createGrowthRouter } from './growth';
 import { createDiscoveryRouter } from './discovery';
 import { createAnalyticsRouter } from './analytics';
+import { createAuditRouter } from './audit';
 
 /**
  * API router: every domain module mounts here under `/api/v1`.
@@ -62,6 +63,7 @@ export function createApiRouter(deps: ApiRouterDeps): Router {
   router.use(createPaymentsRouter(deps));
   router.use(createDiscoveryRouter(deps));
   router.use(createAnalyticsRouter(deps));
+  router.use('/audit-logs', createAuditRouter({ db: deps.db, config: deps.config }));
   router.use(
     createGrowthRouter({
       db: deps.db,

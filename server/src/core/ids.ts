@@ -40,6 +40,7 @@ export const ID_PREFIXES = [
   'lyt',
   'ltx',
   'prf',
+  'aud',
 ] as const;
 
 export type IdPrefix = (typeof ID_PREFIXES)[number];

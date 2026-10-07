@@ -1,10 +1,11 @@
 import type { Migration } from '../migrate';
-import { migration as bookings } from './004-bookings';
-import { migration as catalog } from './002-catalog';
-import { migration as growth } from './006-growth';
 import { migration as identity } from './001-identity';
-import { migration as payments } from './005-payments';
+import { migration as catalog } from './002-catalog';
 import { migration as staffing } from './003-staffing';
+import { migration as bookings } from './004-bookings';
+import { migration as payments } from './005-payments';
+import { migration as growth } from './006-growth';
+import { migration as auditLogs } from './007-audit-logs';
 
 /**
  * Ordered migration registry. Add new migrations here; never edit a
@@ -18,4 +19,5 @@ export const migrations: readonly Migration[] = [
   bookings,
   payments,
   growth,
+  auditLogs,
 ];
