@@ -89,7 +89,7 @@ export class CatalogService {
   // Shops
   // ---------------------------------------------------------------------------
 
-  createShop(actor: Actor, input: Omit<CreateShopInput, 'ownerId'> & { ownerId?: string }): ShopRecord {
+  createShop(actor: Actor, input: Omit<CreateShopInput, 'ownerId' | 'slug'> & { ownerId?: string; slug?: string }): ShopRecord {
     assertCan(actor.role, 'shop:write');
 
     const ownerId = actor.role === 'admin' && input.ownerId ? input.ownerId : actor.userId;
@@ -264,7 +264,7 @@ export class CatalogService {
   // Categories & Services
   // ---------------------------------------------------------------------------
 
-  createCategory(actor: Actor, input: CreateCategoryInput): ServiceCategoryRecord {
+  createCategory(actor: Actor, input: Omit<CreateCategoryInput, 'slug'> & { slug?: string }): ServiceCategoryRecord {
     assertCan(actor.role, 'service:manage');
 
     if (input.shopId) {
@@ -285,7 +285,7 @@ export class CatalogService {
     return this.servicesRepo.listCategories({ shopId, includePlatform: true });
   }
 
-  createService(actor: Actor, shopId: string, input: Omit<CreateServiceInput, 'shopId'>): ServiceRecord {
+  createService(actor: Actor, shopId: string, input: Omit<CreateServiceInput, 'shopId' | 'slug'> & { slug?: string }): ServiceRecord {
     assertCan(actor.role, 'service:manage');
     const shop = this.getShop(shopId);
     this.assertShopOwnershipOrAdmin(actor, shop);

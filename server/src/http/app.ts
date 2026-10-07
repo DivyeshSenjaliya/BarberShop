@@ -6,6 +6,7 @@ import type { AppConfig } from '../core/config';
 import type { Logger } from '../core/logger';
 import type { Db } from '../db/sqlite';
 import { AuthService } from '../domain/auth/service';
+import { CatalogService } from '../domain/catalog/service';
 import { asyncHandler } from './asyncHandler';
 import {
   accessLog,
@@ -104,6 +105,7 @@ export function createApp(deps: AppDeps, options: CreateAppOptions = {}): Expres
 function registerRoutes(app: Express, deps: AppDeps): void {
   const { db, config, logger } = deps;
   const auth = new AuthService({ db, config, logger });
+  const catalog = new CatalogService({ db, logger });
 
   app.get(
     '/healthz',
@@ -125,5 +127,5 @@ function registerRoutes(app: Express, deps: AppDeps): void {
     }),
   );
 
-  app.use('/api/v1', createApiRouter({ db, config, logger, auth }));
+  app.use('/api/v1', createApiRouter({ db, config, logger, auth, catalog }));
 }
