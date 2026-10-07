@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "NODE_PATH=./server/node_modules ./server/node_modules/.bin/jest --config jest.frontend.config.js",
+    "test:server": "npm test --prefix server",
+    "test:all": "npm run test:server && npm run test"
   },
   "dependencies": {
     "@react-native-firebase/auth": "^20.1.0",
