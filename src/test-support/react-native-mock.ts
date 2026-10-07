@@ -35,6 +35,7 @@ export const SafeAreaView = createMockComponent('SafeAreaView');
 export const ScrollView = createMockComponent('ScrollView');
 export const Image = createMockComponent('Image');
 export const ImageBackground = createMockComponent('ImageBackground');
+export const Switch = createMockComponent('Switch');
 
 export const FlatList: React.FC<any> = ({
   data,
