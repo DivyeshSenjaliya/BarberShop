@@ -36,6 +36,8 @@ export const ScrollView = createMockComponent('ScrollView');
 export const Image = createMockComponent('Image');
 export const ImageBackground = createMockComponent('ImageBackground');
 export const Switch = createMockComponent('Switch');
+export const TouchableWithoutFeedback = createMockComponent('TouchableWithoutFeedback');
+export const Pressable = createMockComponent('Pressable');
 
 export const FlatList: React.FC<any> = ({
   data,

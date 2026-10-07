@@ -8,6 +8,10 @@ import { LoadingState } from './LoadingState';
 import { Input } from './Input';
 import { Modal } from './Modal';
 import { ToastProvider, useToast } from './ToastContext';
+import { Avatar } from './Avatar';
+import { RatingStars } from './RatingStars';
+import { SegmentedControl } from './SegmentedControl';
+import { BottomSheet } from './BottomSheet';
 import { Text, TouchableOpacity } from 'react-native';
 
 describe('Design System Components', () => {
@@ -235,4 +239,128 @@ describe('Design System Components', () => {
       });
     });
   });
+
+  describe('Avatar', () => {
+    it('renders initials from full name when no image URI is provided', () => {
+      let tree: renderer.ReactTestRenderer | null = null;
+      renderer.act(() => {
+        tree = renderer.create(<Avatar name="John Doe" size="md" status="online" testID="test-avatar" />);
+      });
+
+      expect(tree).toBeDefined();
+      const instance = tree!.root;
+      const initialsText = instance.findByProps({ children: 'JD' });
+      expect(initialsText).toBeDefined();
+    });
+
+    it('renders image when URI is provided', () => {
+      let tree: renderer.ReactTestRenderer | null = null;
+      renderer.act(() => {
+        tree = renderer.create(
+          <Avatar uri="https://example.com/avatar.jpg" name="Jane" size="lg" testID="test-avatar" />
+        );
+      });
+
+      const instance = tree!.root;
+      const image = instance.findByProps({ accessibilityLabel: 'Jane' });
+      expect(image).toBeDefined();
+    });
+  });
+
+  describe('RatingStars', () => {
+    it('renders non-interactive stars with score and reviews count', () => {
+      let tree: renderer.ReactTestRenderer | null = null;
+      renderer.act(() => {
+        tree = renderer.create(
+          <RatingStars rating={4.5} maxRating={5} showValue reviewsCount={120} testID="test-rating" />
+        );
+      });
+
+      const instance = tree!.root;
+      const valueNode = instance.findByProps({ testID: 'test-rating-value' });
+      expect(valueNode.props.children).toBe('4.5');
+      const countNode = instance.findByProps({ testID: 'test-rating-count' });
+      expect(countNode.props.children).toEqual(['(', 120, ')']);
+    });
+
+    it('handles interactive rating on press', () => {
+      const onRateMock = jest.fn();
+      let tree: renderer.ReactTestRenderer | null = null;
+      renderer.act(() => {
+        tree = renderer.create(
+          <RatingStars rating={3} onRate={onRateMock} testID="test-rating" />
+        );
+      });
+
+      const instance = tree!.root;
+      const fourthStar = instance.findByProps({ testID: 'test-rating-star-4' });
+      renderer.act(() => {
+        fourthStar.props.onPress();
+      });
+
+      expect(onRateMock).toHaveBeenCalledWith(4);
+    });
+  });
+
+  describe('SegmentedControl', () => {
+    it('renders options and switches active tab on select', () => {
+      const onSelectMock = jest.fn();
+      const options = [
+        { value: 'upcoming', label: 'Upcoming', badge: 2 },
+        { value: 'past', label: 'Past' },
+        { value: 'cancelled', label: 'Cancelled' },
+      ];
+
+      let tree: renderer.ReactTestRenderer | null = null;
+      renderer.act(() => {
+        tree = renderer.create(
+          <SegmentedControl
+            options={options}
+            selectedValue="upcoming"
+            onSelect={onSelectMock}
+            testID="test-seg"
+          />
+        );
+      });
+
+      const instance = tree!.root;
+      const pastTab = instance.findByProps({ testID: 'test-seg-opt-past' });
+      renderer.act(() => {
+        pastTab.props.onPress();
+      });
+
+      expect(onSelectMock).toHaveBeenCalledWith('past');
+    });
+  });
+
+  describe('BottomSheet', () => {
+    it('renders sheet with title and children when visible', () => {
+      const onCloseMock = jest.fn();
+      let tree: renderer.ReactTestRenderer | null = null;
+      renderer.act(() => {
+        tree = renderer.create(
+          <BottomSheet
+            visible={true}
+            onClose={onCloseMock}
+            title="Filter Options"
+            subtitle="Choose your preferences"
+            testID="test-sheet"
+          >
+            <Text testID="sheet-child">Filter Content</Text>
+          </BottomSheet>
+        );
+      });
+
+      const instance = tree!.root;
+      const child = instance.findByProps({ testID: 'sheet-child' });
+      expect(child).toBeDefined();
+
+      const closeBtn = instance.findByProps({ testID: 'test-sheet-close' });
+      renderer.act(() => {
+        closeBtn.props.onPress();
+      });
+      expect(onCloseMock).toHaveBeenCalled();
+    });
+  });
 });
+

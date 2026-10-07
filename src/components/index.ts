@@ -6,3 +6,7 @@ export * from './EmptyState';
 export * from './LoadingState';
 export * from './Modal';
 export * from './ToastContext';
+export * from './Avatar';
+export * from './RatingStars';
+export * from './SegmentedControl';
+export * from './BottomSheet';
