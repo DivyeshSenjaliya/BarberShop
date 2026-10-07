@@ -7,10 +7,17 @@ import type { CatalogService } from '../../domain/catalog/service';
 import type { BookingsService } from '../../domain/booking/service';
 import type { AvailabilityService } from '../../domain/booking/availability';
 import type { PaymentService } from '../../domain/payment/service';
+import type { PromotionsService } from '../../domain/growth/promotions';
+import type { LoyaltyService } from '../../domain/growth/loyalty';
+import type { ReviewsService } from '../../domain/growth/reviews';
+import type { NotificationsService } from '../../domain/growth/notifications';
+import type { FavoritesRepository } from '../../db/repositories/favorites';
+import type { CouponsRepository } from '../../db/repositories/coupons';
 import { createAuthRouter } from './auth';
 import { createCatalogRouter } from './catalog';
 import { createBookingsRouter } from './bookings';
 import { createPaymentsRouter } from './payments';
+import { createGrowthRouter } from './growth';
 
 /**
  * API router: every domain module mounts here under `/api/v1`.
@@ -26,6 +33,14 @@ export interface ApiRouterDeps {
   bookings: BookingsService;
   availability: AvailabilityService;
   payments: PaymentService;
+  growth: {
+    promotions: PromotionsService;
+    loyalty: LoyaltyService;
+    reviews: ReviewsService;
+    notifications: NotificationsService;
+    favoritesRepo: FavoritesRepository;
+    couponsRepo: CouponsRepository;
+  };
 }
 
 export function createApiRouter(deps: ApiRouterDeps): Router {
@@ -35,6 +50,14 @@ export function createApiRouter(deps: ApiRouterDeps): Router {
   router.use(createCatalogRouter(deps));
   router.use(createBookingsRouter(deps));
   router.use(createPaymentsRouter(deps));
+  router.use(
+    createGrowthRouter({
+      db: deps.db,
+      config: deps.config,
+      logger: deps.logger,
+      ...deps.growth,
+    }),
+  );
 
   return router;
 }

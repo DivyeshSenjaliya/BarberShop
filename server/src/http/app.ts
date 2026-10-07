@@ -10,6 +10,17 @@ import { CatalogService } from '../domain/catalog/service';
 import { BookingsService } from '../domain/booking/service';
 import { AvailabilityService } from '../domain/booking/availability';
 import { PaymentService } from '../domain/payment/service';
+import { CouponsRepository } from '../db/repositories/coupons';
+import { BookingsRepository } from '../db/repositories/bookings';
+import { ShopsRepository } from '../db/repositories/shops';
+import { ReviewsRepository } from '../db/repositories/reviews';
+import { LoyaltyRepository } from '../db/repositories/loyalty';
+import { NotificationsRepository } from '../db/repositories/notifications';
+import { FavoritesRepository } from '../db/repositories/favorites';
+import { PromotionsService } from '../domain/growth/promotions';
+import { LoyaltyService } from '../domain/growth/loyalty';
+import { ReviewsService } from '../domain/growth/reviews';
+import { NotificationsService } from '../domain/growth/notifications';
 import { asyncHandler } from './asyncHandler';
 import {
   accessLog,
@@ -113,6 +124,19 @@ function registerRoutes(app: Express, deps: AppDeps): void {
   const availability = new AvailabilityService({ db, logger });
   const payments = new PaymentService({ db, logger });
 
+  const couponsRepo = new CouponsRepository(db);
+  const bookingsRepo = new BookingsRepository(db);
+  const shopsRepo = new ShopsRepository(db);
+  const reviewsRepo = new ReviewsRepository(db);
+  const loyaltyRepo = new LoyaltyRepository(db);
+  const notificationsRepo = new NotificationsRepository(db);
+  const favoritesRepo = new FavoritesRepository(db);
+
+  const promotions = new PromotionsService({ couponsRepo, bookingsRepo, logger });
+  const loyalty = new LoyaltyService({ loyaltyRepo, logger });
+  const reviews = new ReviewsService({ reviewsRepo, bookingsRepo, shopsRepo, logger });
+  const notifications = new NotificationsService({ notificationsRepo, logger });
+
   app.get(
     '/healthz',
     asyncHandler((req, res) => {
@@ -135,6 +159,23 @@ function registerRoutes(app: Express, deps: AppDeps): void {
 
   app.use(
     '/api/v1',
-    createApiRouter({ db, config, logger, auth, catalog, bookings, availability, payments }),
+    createApiRouter({
+      db,
+      config,
+      logger,
+      auth,
+      catalog,
+      bookings,
+      availability,
+      payments,
+      growth: {
+        promotions,
+        loyalty,
+        reviews,
+        notifications,
+        favoritesRepo,
+        couponsRepo,
+      },
+    }),
   );
 }
