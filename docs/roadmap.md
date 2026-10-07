@@ -25,8 +25,8 @@ builds on a working foundation; each bullet is expected to become one or more co
 - [x] Schema: shops, branches, business hours, holidays.
 - [x] Schema: service categories, services, durations, pricing, per-branch overrides.
 - [x] Schema: staff profiles, roles, skills, working hours, breaks, leave, attendance.
-- [ ] Shops/branches/services/staff repositories and services.
-- [ ] Catalog API endpoints.
+- [x] Shops/branches/services/staff repositories and services.
+- [x] Catalog API endpoints.
 - [ ] Staff availability computation (moved into Phase 3 with the booking engine).
 
 ## Phase 3 — Booking engine
