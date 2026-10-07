@@ -36,6 +36,36 @@ export const ScrollView = createMockComponent('ScrollView');
 export const Image = createMockComponent('Image');
 export const ImageBackground = createMockComponent('ImageBackground');
 
+export const FlatList: React.FC<any> = ({
+  data,
+  renderItem,
+  ListHeaderComponent,
+  ListEmptyComponent,
+  keyExtractor,
+  ...props
+}) => {
+  return React.createElement(
+    'FlatList',
+    props,
+    ListHeaderComponent ? (typeof ListHeaderComponent === 'function' ? React.createElement(ListHeaderComponent) : ListHeaderComponent) : null,
+    Array.isArray(data) && renderItem
+      ? data.map((item, index) =>
+          React.createElement(
+            React.Fragment,
+            { key: keyExtractor ? keyExtractor(item, index) : index },
+            renderItem({ item, index })
+          )
+        )
+      : null,
+    (!data || data.length === 0) && ListEmptyComponent
+      ? typeof ListEmptyComponent === 'function'
+        ? React.createElement(ListEmptyComponent)
+        : ListEmptyComponent
+      : null
+  );
+};
+FlatList.displayName = 'FlatList';
+
 export type ViewStyle = Record<string, unknown>;
 export type TextStyle = Record<string, unknown>;
 export type ImageStyle = Record<string, unknown>;
