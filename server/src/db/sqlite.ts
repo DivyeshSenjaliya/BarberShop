@@ -130,3 +130,14 @@ class SqliteDb implements Db {
 export function openDatabase(path: string): Db {
   return new SqliteDb(path);
 }
+
+/** True when SQLite rejected a write because of a constraint (UNIQUE, FK, CHECK). */
+export function isConstraintViolation(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  return /constraint|FOREIGN KEY|UNIQUE|CHECK/i.test(error.message);
+}
+
+export function isUniqueViolation(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  return /UNIQUE|constraint failed/i.test(error.message);
+}
