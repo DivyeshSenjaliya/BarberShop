@@ -21,6 +21,7 @@ import { PromotionsService } from '../domain/growth/promotions';
 import { LoyaltyService } from '../domain/growth/loyalty';
 import { ReviewsService } from '../domain/growth/reviews';
 import { NotificationsService } from '../domain/growth/notifications';
+import { DiscoveryService } from '../domain/discovery/service';
 import { asyncHandler } from './asyncHandler';
 import {
   accessLog,
@@ -136,6 +137,7 @@ function registerRoutes(app: Express, deps: AppDeps): void {
   const loyalty = new LoyaltyService({ loyaltyRepo, logger });
   const reviews = new ReviewsService({ reviewsRepo, bookingsRepo, shopsRepo, logger });
   const notifications = new NotificationsService({ notificationsRepo, logger });
+  const discovery = new DiscoveryService({ db, logger });
 
   app.get(
     '/healthz',
@@ -168,6 +170,7 @@ function registerRoutes(app: Express, deps: AppDeps): void {
       bookings,
       availability,
       payments,
+      discovery,
       growth: {
         promotions,
         loyalty,
