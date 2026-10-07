@@ -39,10 +39,10 @@ builds on a working foundation; each bullet is expected to become one or more co
 
 ## Phase 4 — Money
 
-- [ ] Payment abstraction (mock provider + provider interface).
-- [ ] Invoices: tax, discount, coupon, refunds (full/partial), payment states.
-- [ ] Wallet and transaction records.
-- [ ] Refund state machine and tests.
+- [x] Payment abstraction (mock provider + provider interface).
+- [x] Invoices: tax, discount, coupon, refunds (full/partial), payment states.
+- [x] Wallet and transaction records.
+- [x] Refund state machine and tests.
 
 ## Phase 5 — Growth features
 
