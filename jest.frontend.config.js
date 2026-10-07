@@ -3,6 +3,7 @@ module.exports = {
   testEnvironment: 'node',
   rootDir: '.',
   testMatch: ['<rootDir>/src/**/*.test.ts', '<rootDir>/src/**/*.test.tsx'],
+  moduleDirectories: ['node_modules', '<rootDir>/server/node_modules'],
   moduleNameMapper: {
     '^react-native$': '<rootDir>/src/test-support/react-native-mock.ts',
   },
