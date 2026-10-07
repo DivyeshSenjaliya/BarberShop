@@ -11,7 +11,7 @@ function makeResponse(): Response & { headers: Record<string, string> } {
   return {
     headers,
     setHeader(name: string, value: string) {
-      headers[name] = value;
+      headers[name.toLowerCase()] = value;
       return this;
     },
   } as unknown as Response & { headers: Record<string, string> };
