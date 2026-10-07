@@ -5,27 +5,29 @@ builds on a working foundation; each bullet is expected to become one or more co
 
 ## Phase 0 — Foundations
 
-- [ ] Record audit and roadmap (this batch).
-- [ ] Scaffold `server/` workspace: TypeScript, Express, SQLite, Jest.
-- [ ] Core kernel: config loader, structured logger, error taxonomy, request IDs.
-- [ ] Validation layer (shared zod schemas + error formatting).
-- [ ] Database: migration runner, initial schema, indexes, constraints.
-- [ ] Repository layer + seed data.
+- [x] Record audit and roadmap (this batch).
+- [x] Scaffold `server/` workspace: TypeScript, Express, SQLite, Jest.
+- [x] Core kernel: config loader, structured logger, error taxonomy, request IDs.
+- [x] Validation layer (shared zod schemas + error formatting).
+- [x] Database: migration runner, initial schema, indexes, constraints.
+- [x] Repository layer (users, sessions) + test fixtures.
 
 ## Phase 1 — Identity & access
 
-- [ ] Users: registration, login, password hashing (scrypt), sessions/JWT.
-- [ ] Refresh tokens, logout, token revocation.
-- [ ] Roles and permissions (customer, barber, manager, owner, admin).
-- [ ] Rate limiting on auth endpoints.
+- [x] Users: registration, login, password hashing (scrypt), sessions/JWT.
+- [x] Refresh tokens, logout, token revocation (rotation with reuse detection).
+- [x] Roles and permissions (customer, barber, manager, owner, admin).
+- [x] Rate limiting on auth endpoints.
 - [ ] Mobile: auth screens wired to the real API, secure token storage.
 
 ## Phase 2 — Catalog
 
-- [ ] Shops, branches, business hours, holidays.
-- [ ] Service categories, services, durations, pricing, add-ons.
-- [ ] Staff/barber profiles, roles, permissions, working hours, breaks.
-- [ ] Staff availability and leave.
+- [x] Schema: shops, branches, business hours, holidays.
+- [x] Schema: service categories, services, durations, pricing, per-branch overrides.
+- [x] Schema: staff profiles, roles, skills, working hours, breaks, leave, attendance.
+- [ ] Shops/branches/services/staff repositories and services.
+- [ ] Catalog API endpoints.
+- [ ] Staff availability computation (moved into Phase 3 with the booking engine).
 
 ## Phase 3 — Booking engine
 
