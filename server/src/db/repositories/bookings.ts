@@ -273,6 +273,30 @@ export class BookingsRepository {
       .map(mapAppointmentRow);
   }
 
+  /**
+   * Find all non-cancelled bookings for a staff member whose appointment_date
+   * falls within [startDate, endDate] (inclusive, YYYY-MM-DD strings).
+   * Used by the staff leave approval engine to detect conflicts.
+   */
+  findConflictingForStaff(
+    staffId: string,
+    startDate: string,
+    endDate: string,
+  ): AppointmentRecord[] {
+    return this.db
+      .all<AppointmentRow>(
+        `SELECT ${AppointmentSelectColumns} FROM appointments
+         WHERE staff_id = ?
+           AND deleted_at IS NULL
+           AND status NOT IN ('cancelled', 'no_show')
+           AND appointment_date >= ?
+           AND appointment_date <= ?
+         ORDER BY starts_at ASC`,
+        [staffId, startDate, endDate],
+      )
+      .map(mapAppointmentRow);
+  }
+
   list(filter: ListAppointmentsFilter = {}): AppointmentRecord[] {
     const clauses: string[] = [];
     const params: unknown[] = [];

@@ -8,6 +8,7 @@ import { migration as growth } from './006-growth';
 import { migration as auditLogs } from './007-audit-logs';
 import { migration as idempotency } from './008-idempotency';
 import { migration as outbox } from './009-outbox';
+import { migration as staffLeaves } from './010-staff-leaves';
 
 /**
  * Ordered migration registry. Add new migrations here; never edit a
@@ -24,6 +25,8 @@ export const migrations: readonly Migration[] = [
   auditLogs,
   idempotency,
   outbox,
+  staffLeaves,
 ];
+
 
 
