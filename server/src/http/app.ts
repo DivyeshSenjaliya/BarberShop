@@ -7,6 +7,8 @@ import type { Logger } from '../core/logger';
 import type { Db } from '../db/sqlite';
 import { AuthService } from '../domain/auth/service';
 import { CatalogService } from '../domain/catalog/service';
+import { BookingsService } from '../domain/booking/service';
+import { AvailabilityService } from '../domain/booking/availability';
 import { asyncHandler } from './asyncHandler';
 import {
   accessLog,
@@ -106,6 +108,8 @@ function registerRoutes(app: Express, deps: AppDeps): void {
   const { db, config, logger } = deps;
   const auth = new AuthService({ db, config, logger });
   const catalog = new CatalogService({ db, logger });
+  const bookings = new BookingsService({ db, logger });
+  const availability = new AvailabilityService({ db, logger });
 
   app.get(
     '/healthz',
@@ -127,5 +131,8 @@ function registerRoutes(app: Express, deps: AppDeps): void {
     }),
   );
 
-  app.use('/api/v1', createApiRouter({ db, config, logger, auth, catalog }));
+  app.use(
+    '/api/v1',
+    createApiRouter({ db, config, logger, auth, catalog, bookings, availability }),
+  );
 }
