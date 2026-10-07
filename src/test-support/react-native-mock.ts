@@ -14,6 +14,10 @@ export const Dimensions = {
   get: (_dim: string) => ({ width: 375, height: 812 }),
 };
 
+export const Alert = {
+  alert: jest.fn(),
+};
+
 const createMockComponent = (name: string) => {
   const Component: React.FC<any> = ({ children, ...props }) =>
     React.createElement(name, props, children);
@@ -30,6 +34,7 @@ export const Modal = createMockComponent('Modal');
 export const SafeAreaView = createMockComponent('SafeAreaView');
 export const ScrollView = createMockComponent('ScrollView');
 export const Image = createMockComponent('Image');
+export const ImageBackground = createMockComponent('ImageBackground');
 
 export type ViewStyle = Record<string, unknown>;
 export type TextStyle = Record<string, unknown>;

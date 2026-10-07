@@ -1,128 +1,166 @@
-import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, TextInput, Alert, } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { scale } from '../utilits/Scale'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Color } from '../constants/Color'
+import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { scale } from '../utilits/Scale';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Color } from '../constants/Color';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../components/ToastContext';
 
-const Login = ({ navigation, route }) => {
-    const [text, onChangeText] = React.useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [isEmail, setIsEmail] = useState(false)
-    const [isPassword, setIsPassword] = useState(false)
+const Login = ({ navigation }) => {
+    const { login, isLoading, error: authError } = useAuth();
+    const { showToast } = useToast();
 
-    const handleFetch = async () => {
-        if (email == '') {
-            setIsEmail(true);
-            return
-        } else if (password == '') {
-            setIsPassword(true);
-            return;
-        } else {
-            try {
-                fetch(`https://dummyjson.com/products/${route.params.id}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
 
-                        username: email,
-                        password: password,
-                    })
-                })
-                    .then(res => res.json())
-                    .then(result => {
-                        console.log(result);
-                        setEmail('');
-                        setPassword('')
-                    });
-            } catch (error) {
-                console.log(error)
-            }
+    const validate = () => {
+        const errors = {};
+        if (!email.trim()) {
+            errors.email = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+            errors.email = 'Enter a valid email address';
         }
-    }
+
+        if (!password) {
+            errors.password = 'Password is required';
+        } else if (password.length < 6) {
+            errors.password = 'Password must be at least 6 characters';
+        }
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const handleLogin = async () => {
+        if (!validate()) {
+            return;
+        }
+
+        try {
+            await login({
+                email: email.trim(),
+                password: password,
+            });
+            showToast('Logged in successfully', { type: 'success' });
+            navigation.navigate('Services');
+        } catch (err) {
+            const message = err?.message || 'Login failed. Please check your credentials.';
+            showToast(message, { type: 'error' });
+        }
+    };
 
     return (
         <View style={styles.container}>
             <ImageBackground
-                source={require("../assests/icon/login.png")}
+                source={require('../assests/icon/login.png')}
                 style={styles.img}>
                 <View style={styles.header}>
                     <Image
-                        source={require("../assests/icon/logo.png")}
+                        source={require('../assests/icon/logo.png')}
                         style={styles.Image}
                     />
                     <TouchableOpacity
-                        style={styles.button} onPress={() => navigation.navigate('SingUp')}>
-                        <Text style={{ fontWeight: "bold", color: "white" }}>Sign Up</Text>
+                        style={styles.button}
+                        onPress={() => navigation.navigate('SingUp')}>
+                        <Text style={{ fontWeight: 'bold', color: 'white' }}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
                 <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
-
                     <View style={styles.login}>
                         <View>
-                            <Text style={styles.Text} >LOGIN</Text>
+                            <Text style={styles.Text}>LOGIN</Text>
                         </View>
+
+                        {authError ? (
+                            <View style={styles.errorBanner}>
+                                <Text style={styles.errorBannerText}>{authError}</Text>
+                            </View>
+                        ) : null}
+
                         <View style={styles.email}>
-                            <TextInput style={styles.Email}
+                            <TextInput
+                                style={styles.Email}
                                 onChangeText={(text) => {
-                                    setIsEmail(false)
-                                    setEmail(text)
+                                    setEmail(text);
+                                    if (validationErrors.email) {
+                                        setValidationErrors((prev) => ({ ...prev, email: undefined }));
+                                    }
                                 }}
-                                placeholder='Email Address'
-                                placeholderTextColor={"white"}
-                                keyboardType='email-address'
+                                placeholder="Email Address"
+                                placeholderTextColor="rgba(255,255,255,0.6)"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
                                 value={email}
                             />
-                            <View style={styles.img}></View>
                         </View>
-                        {isEmail && <Text style={{ color: Color.red }}>Email is empty</Text>}
+                        {validationErrors.email ? (
+                            <Text style={styles.errorText}>{validationErrors.email}</Text>
+                        ) : null}
+
                         <View style={styles.email}>
-                            <TextInput style={styles.Email}
-                                secureTextEntry={true}
+                            <TextInput
+                                style={styles.Email}
+                                secureTextEntry={!showPassword}
                                 onChangeText={(text) => {
-                                    setIsPassword(false)
-                                    setPassword(text)
+                                    setPassword(text);
+                                    if (validationErrors.password) {
+                                        setValidationErrors((prev) => ({ ...prev, password: undefined }));
+                                    }
                                 }}
-                                placeholder='Password'
-                                placeholderTextColor={"white"}
-                                keyboardType='default'
+                                placeholder="Password"
+                                placeholderTextColor="rgba(255,255,255,0.6)"
+                                autoCapitalize="none"
                                 value={password}
                             />
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                                 <Image
-                                    source={require('../assests/icon/Icons.png')}
-
-                                    style={{ height: scale(20), width: scale(20) }}
+                                    source={
+                                        showPassword
+                                            ? require('../assests/icon/hide.png')
+                                            : require('../assests/icon/Icons.png')
+                                    }
+                                    style={{ height: scale(20), width: scale(20), tintColor: 'white' }}
                                 />
                             </TouchableOpacity>
                         </View>
-                        {isPassword && <Text style={{ color: 'red' }}>Email is empty</Text>}
+                        {validationErrors.password ? (
+                            <Text style={styles.errorText}>{validationErrors.password}</Text>
+                        ) : null}
 
                         <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
                             <Text style={styles.pass}>Forgot password?</Text>
+                        </TouchableOpacity>
 
-                        </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => { navigation.navigate('Services') }} style={styles.home}>
-                            <Text style={{ color: "white", fontSize: 16, }}>Login</Text>
+                            onPress={handleLogin}
+                            disabled={isLoading}
+                            style={[styles.home, isLoading && styles.disabledButton]}>
+                            {isLoading ? (
+                                <ActivityIndicator color="white" />
+                            ) : (
+                                <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Login</Text>
+                            )}
                         </TouchableOpacity>
+
                         <Text style={styles.continue}>Or continue with</Text>
                         <View style={styles.last}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => showToast('Google sign-in available soon', { type: 'info' })}>
                                 <Image
-                                    source={require("../assests/icon/Google.png")}
+                                    source={require('../assests/icon/Google.png')}
                                     style={styles.lastimage}
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => showToast('Apple sign-in available soon', { type: 'info' })}>
                                 <Image
-                                    source={require("../assests/icon/Apple.png")}
+                                    source={require('../assests/icon/Apple.png')}
                                     style={styles.lastimage}
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => showToast('Facebook sign-in available soon', { type: 'info' })}>
                                 <Image
-                                    source={require("../assests/icon/Facebook.png")}
+                                    source={require('../assests/icon/Facebook.png')}
                                     style={styles.lastimage}
                                 />
                             </TouchableOpacity>
@@ -131,104 +169,118 @@ const Login = ({ navigation, route }) => {
                 </KeyboardAwareScrollView>
             </ImageBackground>
         </View>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "black",
-
+        backgroundColor: 'black',
     },
     img: {
         flex: 1,
-        resizeMode: "contain",
+        resizeMode: 'contain',
         padding: 10,
-        justifyContent: "space-between",
-
+        justifyContent: 'space-between',
     },
     Image: {
         height: scale(50),
-        width: "30%",
-        resizeMode: "contain",
-
-    },
-    button: {
-
-        backgroundColor: "#554F6780",
-        height: scale(35),
-        width: "25%",
-        borderRadius: 40,
-        alignItems: "center",
-        justifyContent: "center",
-
+        width: scale(50),
+        resizeMode: 'contain',
     },
     header: {
-
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingVertical: scale(30),
-        paddingHorizontal: 10
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        marginTop: 20,
     },
-    login: {
-        flex: 1,
-        padding: 10,
-        paddingTop: 50,
-
+    button: {
+        height: scale(36),
+        width: scale(88),
+        borderRadius: 18,
+        borderWidth: 1,
+        borderColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     Text: {
-        color: "white",
-        fontSize: 50,
-        fontWeight: "bold",
-
+        color: 'white',
+        fontSize: scale(30),
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
     email: {
-        height: scale(50),
-        width: "100%",
-        backgroundColor: "#554F6780",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-        paddingHorizontal: 20,
-        borderRadius: 10,
-        marginTop: 30,
-
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(255,255,255,0.4)',
+        alignItems: 'center',
+        marginTop: 15,
+        paddingBottom: 5,
     },
     Email: {
-        color: "white",
+        flex: 1,
         fontSize: 16,
-        width: "90%"
+        color: 'white',
     },
     pass: {
-        color: "white",
-        marginTop: 30,
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: 14,
+        marginTop: 15,
+        textAlign: 'right',
     },
     home: {
-        height: scale(50),
-        width: "100%",
-        backgroundColor: "#3244E9",
-        borderRadius: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 30
+        height: scale(48),
+        width: '100%',
+        borderRadius: 24,
+        backgroundColor: Color.Primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 25,
+    },
+    disabledButton: {
+        opacity: 0.6,
     },
     continue: {
-        textAlign: "center",
-        fontSize: 15,
-        color: "white",
-        marginTop: 30
-    },
-    lastimage: {
-        height: scale(50),
-        width: scale(50),
-        resizeMode: "contain"
+        color: 'rgba(255,255,255,0.6)',
+        fontSize: 14,
+        textAlign: 'center',
+        marginTop: 25,
     },
     last: {
-        flexDirection: "row",
-        justifyContent: "center",
-        marginTop: 30,
-        gap: 25,
-    }
-})
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 20,
+        marginTop: 20,
+        marginBottom: 20,
+    },
+    lastimage: {
+        height: scale(40),
+        width: scale(40),
+        resizeMode: 'contain',
+    },
+    login: {
+        paddingHorizontal: 20,
+        marginTop: 40,
+    },
+    errorText: {
+        color: Color.red || '#EF4444',
+        fontSize: 12,
+        marginTop: 4,
+    },
+    errorBanner: {
+        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+        borderColor: '#EF4444',
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 10,
+    },
+    errorBannerText: {
+        color: '#FCA5A5',
+        fontSize: 13,
+        textAlign: 'center',
+    },
+});
