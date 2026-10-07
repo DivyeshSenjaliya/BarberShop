@@ -59,8 +59,8 @@ builds on a working foundation; each bullet is expected to become one or more co
 
 ## Phase 7 — Dashboard
 
-- [ ] Admin/owner web dashboard: revenue, bookings, customers, staff analytics.
-- [ ] Staff portal: schedule, appointment statuses, earnings/commission.
+- [x] Admin/owner web dashboard: revenue, bookings, customers, staff analytics.
+- [x] Staff portal: schedule, appointment statuses, earnings/commission.
 
 ## Phase 8 — Mobile polish
 
