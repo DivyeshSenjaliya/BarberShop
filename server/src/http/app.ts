@@ -17,11 +17,13 @@ import { ReviewsRepository } from '../db/repositories/reviews';
 import { LoyaltyRepository } from '../db/repositories/loyalty';
 import { NotificationsRepository } from '../db/repositories/notifications';
 import { FavoritesRepository } from '../db/repositories/favorites';
+import { StaffRepository } from '../db/repositories/staff';
 import { PromotionsService } from '../domain/growth/promotions';
 import { LoyaltyService } from '../domain/growth/loyalty';
 import { ReviewsService } from '../domain/growth/reviews';
 import { NotificationsService } from '../domain/growth/notifications';
 import { DiscoveryService } from '../domain/discovery/service';
+import { AnalyticsService } from '../domain/analytics/service';
 import { asyncHandler } from './asyncHandler';
 import {
   accessLog,
@@ -128,6 +130,7 @@ function registerRoutes(app: Express, deps: AppDeps): void {
   const couponsRepo = new CouponsRepository(db);
   const bookingsRepo = new BookingsRepository(db);
   const shopsRepo = new ShopsRepository(db);
+  const staffRepo = new StaffRepository(db);
   const reviewsRepo = new ReviewsRepository(db);
   const loyaltyRepo = new LoyaltyRepository(db);
   const notificationsRepo = new NotificationsRepository(db);
@@ -138,6 +141,7 @@ function registerRoutes(app: Express, deps: AppDeps): void {
   const reviews = new ReviewsService({ reviewsRepo, bookingsRepo, shopsRepo, logger });
   const notifications = new NotificationsService({ notificationsRepo, logger });
   const discovery = new DiscoveryService({ db, logger });
+  const analytics = new AnalyticsService({ db, logger });
 
   app.get(
     '/healthz',
@@ -171,6 +175,9 @@ function registerRoutes(app: Express, deps: AppDeps): void {
       availability,
       payments,
       discovery,
+      analytics,
+      staffRepo,
+      shopsRepo,
       growth: {
         promotions,
         loyalty,

@@ -14,12 +14,16 @@ import type { NotificationsService } from '../../domain/growth/notifications';
 import type { FavoritesRepository } from '../../db/repositories/favorites';
 import type { CouponsRepository } from '../../db/repositories/coupons';
 import type { DiscoveryService } from '../../domain/discovery/service';
+import type { AnalyticsService } from '../../domain/analytics/service';
+import type { StaffRepository } from '../../db/repositories/staff';
+import type { ShopsRepository } from '../../db/repositories/shops';
 import { createAuthRouter } from './auth';
 import { createCatalogRouter } from './catalog';
 import { createBookingsRouter } from './bookings';
 import { createPaymentsRouter } from './payments';
 import { createGrowthRouter } from './growth';
 import { createDiscoveryRouter } from './discovery';
+import { createAnalyticsRouter } from './analytics';
 
 /**
  * API router: every domain module mounts here under `/api/v1`.
@@ -36,6 +40,9 @@ export interface ApiRouterDeps {
   availability: AvailabilityService;
   payments: PaymentService;
   discovery: DiscoveryService;
+  analytics: AnalyticsService;
+  staffRepo: StaffRepository;
+  shopsRepo: ShopsRepository;
   growth: {
     promotions: PromotionsService;
     loyalty: LoyaltyService;
@@ -54,6 +61,7 @@ export function createApiRouter(deps: ApiRouterDeps): Router {
   router.use(createBookingsRouter(deps));
   router.use(createPaymentsRouter(deps));
   router.use(createDiscoveryRouter(deps));
+  router.use(createAnalyticsRouter(deps));
   router.use(
     createGrowthRouter({
       db: deps.db,
