@@ -27,15 +27,15 @@ builds on a working foundation; each bullet is expected to become one or more co
 - [x] Schema: staff profiles, roles, skills, working hours, breaks, leave, attendance.
 - [x] Shops/branches/services/staff repositories and services.
 - [x] Catalog API endpoints.
-- [ ] Staff availability computation (moved into Phase 3 with the booking engine).
+- [x] Staff availability computation (moved into Phase 3 with the booking engine).
 
 ## Phase 3 — Booking engine
 
-- [ ] Availability computation (hours ∩ staff schedule ∩ breaks ∩ existing bookings).
-- [ ] Booking creation with server-side conflict detection and cancellation window.
-- [ ] Rescheduling and cancellation with state machine.
-- [ ] Buffer time, multi-service bookings, per-staff schedules.
-- [ ] Tests: no double booking, out-of-hours rejected, deadline enforced.
+- [x] Availability computation (hours ∩ staff schedule ∩ breaks ∩ existing bookings).
+- [x] Booking creation with server-side conflict detection and cancellation window.
+- [x] Rescheduling and cancellation with state machine.
+- [x] Buffer time, multi-service bookings, per-staff schedules.
+- [x] Tests: no double booking, out-of-hours rejected, deadline enforced.
 
 ## Phase 4 — Money
 
