@@ -54,8 +54,8 @@ builds on a working foundation; each bullet is expected to become one or more co
 
 ## Phase 6 — Discovery
 
-- [ ] Search & filters (category, price, rating, distance, availability) + sorting.
-- [ ] Pagination and query optimisation, indexes.
+- [x] Search & filters (category, price, rating, distance, availability) + sorting.
+- [x] Pagination and query optimisation, indexes.
 
 ## Phase 7 — Dashboard
 
