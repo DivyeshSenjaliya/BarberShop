@@ -64,3 +64,7 @@ yarn-error.log
 
 # testing
 /coverage
+
+# server workspace
+server/dist/
+server/coverage/
