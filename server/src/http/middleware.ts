@@ -2,6 +2,7 @@ import type { ErrorRequestHandler, RequestHandler } from 'express';
 import type { Logger } from '../core/logger';
 import { newId } from '../core/ids';
 import { AppError, ValidationError, toErrorResponse } from '../core/errors';
+import { PasswordPolicyError } from '../domain/auth/password';
 import './context';
 
 const RequestIdPattern = /^[A-Za-z0-9._-]{1,64}$/;
@@ -67,7 +68,7 @@ export function errorHandler(logger: Logger): ErrorRequestHandler {
       return;
     }
 
-    const normalised = normaliseBodyParserError(error);
+    const normalised = normaliseKnownError(error);
     const requestId = req.id;
     const { status, body } = toErrorResponse(normalised, requestId);
 
@@ -89,8 +90,14 @@ export function errorHandler(logger: Logger): ErrorRequestHandler {
   };
 }
 
-/** Malformed or oversized bodies are client errors, not server crashes. */
-function normaliseBodyParserError(error: unknown): unknown {
+/** Domain errors that are really client mistakes get mapped to 400s. */
+function normaliseKnownError(error: unknown): unknown {
+  if (error instanceof PasswordPolicyError) {
+    return new ValidationError('Password does not meet the requirements',
+      error.problems.map((problem) => ({ path: 'password', message: problem })),
+    );
+  }
+
   const candidate = error as { type?: string; status?: number; statusCode?: number } | null;
   if (!candidate || typeof candidate !== 'object') return error;
 

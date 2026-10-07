@@ -5,6 +5,7 @@ import express, { type Express } from 'express';
 import type { AppConfig } from '../core/config';
 import type { Logger } from '../core/logger';
 import type { Db } from '../db/sqlite';
+import { AuthService } from '../domain/auth/service';
 import { asyncHandler } from './asyncHandler';
 import {
   accessLog,
@@ -14,6 +15,7 @@ import {
 } from './middleware';
 import { rateLimit } from './rateLimit';
 import { sendOk } from './responses';
+import { createApiRouter } from './routes';
 import './context';
 
 export interface AppDeps {
@@ -100,7 +102,8 @@ export function createApp(deps: AppDeps, options: CreateAppOptions = {}): Expres
 }
 
 function registerRoutes(app: Express, deps: AppDeps): void {
-  const { db, config } = deps;
+  const { db, config, logger } = deps;
+  const auth = new AuthService({ db, config, logger });
 
   app.get(
     '/healthz',
@@ -121,4 +124,6 @@ function registerRoutes(app: Express, deps: AppDeps): void {
       });
     }),
   );
+
+  app.use('/api/v1', createApiRouter({ db, config, logger, auth }));
 }
