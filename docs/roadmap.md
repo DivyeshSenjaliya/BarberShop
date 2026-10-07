@@ -46,11 +46,11 @@ builds on a working foundation; each bullet is expected to become one or more co
 
 ## Phase 5 — Growth features
 
-- [ ] Coupons & promotions with usage limits and validation.
-- [ ] Loyalty point ledger, earning, redemption, expiry, referrals.
-- [ ] Reviews & ratings (shop/barber/service), moderation, owner responses, reports.
-- [ ] Favourites (shops, barbers).
-- [ ] Notifications: in-app + email/push abstractions, preferences, templates.
+- [x] Coupons & promotions with usage limits and validation.
+- [x] Loyalty point ledger, earning, redemption, expiry, referrals.
+- [x] Reviews & ratings (shop/barber/service), moderation, owner responses, reports.
+- [x] Favourites (shops, barbers).
+- [x] Notifications: in-app + email/push abstractions, preferences, templates.
 
 ## Phase 6 — Discovery
 
